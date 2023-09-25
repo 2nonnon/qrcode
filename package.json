@@ -22,6 +22,7 @@
     "@iconify-icon/react": "^1.0.1",
     "@types/negotiator": "^0.6.1",
     "@types/node": "^18.11.9",
+    "@types/offscreencanvas": "^2019.7.1",
     "@types/react": "^18.0.25",
     "@types/wicg-file-system-access": "^2020.9.6",
     "autoprefixer": "^10.4.13",
