@@ -1,5 +1,9 @@
-import type { QrcodeOptions } from './useQrcode'
-import { useQrcode } from './useQrcode'
+import type {
+  QrCodeGenerateOptions,
+} from 'uqr'
+import {
+  encode,
+} from 'uqr'
 
 export interface DrawOptions {
   margin: number
@@ -26,7 +30,9 @@ export const MarkerStyleMap = {
 
 export type MarkerStyleType = keyof typeof MarkerStyleMap
 
-export type QrcodeProps = QrcodeOptions & DrawOptions
+export type QrcodeProps = Required<Omit<QrCodeGenerateOptions, 'invert' | 'onEncoded'>> & DrawOptions & {
+  content: string
+}
 
 function drawRectCell({ x, y, color, size, ctx }: { x: number; y: number; color: string; size: number; ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D }) {
   ctx.fillStyle = color
@@ -77,10 +83,18 @@ function drawRoundedCell({ x, y, size, isDark, lightColor, darkColor, ctx, corne
 export async function generateQrcode(target: HTMLCanvasElement, options: QrcodeProps) {
   // console.log(options)
 
-  const qr = useQrcode(options)
+  const { ecc, maskPattern, boostEcc, minVersion, maxVersion, border } = options
+
+  const qr = encode(options.content, { ecc, maskPattern, boostEcc, minVersion, maxVersion, border })
+
+  console.log(qr)
 
   // base data
-  const moduleCount = qr.getModuleCount()
+  const moduleCount = qr.data.length
+
+  const $isDark = (x: number, y: number) => {
+    return qr.data[x][y]
+  }
 
   const maxSize = 16384
 
@@ -95,9 +109,7 @@ export async function generateQrcode(target: HTMLCanvasElement, options: QrcodeP
 
   const qrcodeSize = moduleCount * (pixelSize)
 
-  const margin = Math.round(qrcodeSize * options.margin / 100)
-
-  const width = qrcodeSize + 2 * margin
+  const width = qrcodeSize
   target.height = width < maxSize ? width : maxSize
   target.width = width < maxSize ? width : maxSize
 
@@ -117,21 +129,21 @@ export async function generateQrcode(target: HTMLCanvasElement, options: QrcodeP
   // draw pixel
   for (let x = 0; x < moduleCount; x++) {
     for (let y = 0; y < moduleCount; y++) {
-      const xPos = x * pixelSize + margin
-      const yPos = y * pixelSize + margin
+      const xPos = x * pixelSize
+      const yPos = y * pixelSize
 
-      const isDark = qr.isDark(x, y)
+      const isDark = $isDark(x, y)
 
       if (options.pixelStyle === 'Rounded') {
-        const leftIsDark = x - 1 >= 0 ? qr.isDark(x - 1, y) : false
-        const topIsDark = y - 1 >= 0 ? qr.isDark(x, y - 1) : false
-        const rightIsDark = x + 1 < moduleCount ? qr.isDark(x + 1, y) : false
-        const bottomIsDark = y + 1 < moduleCount ? qr.isDark(x, y + 1) : false
+        const leftIsDark = x - 1 >= 0 ? $isDark(x - 1, y) : false
+        const topIsDark = y - 1 >= 0 ? $isDark(x, y - 1) : false
+        const rightIsDark = x + 1 < moduleCount ? $isDark(x + 1, y) : false
+        const bottomIsDark = y + 1 < moduleCount ? $isDark(x, y + 1) : false
 
-        const leftTopIsDark = leftIsDark && topIsDark && qr.isDark(x - 1, y - 1)
-        const rightTopIsDark = rightIsDark && topIsDark && qr.isDark(x + 1, y - 1)
-        const rightBottomIsDark = rightIsDark && bottomIsDark && qr.isDark(x + 1, y + 1)
-        const leftBottomIsDark = leftIsDark && bottomIsDark && qr.isDark(x - 1, y + 1)
+        const leftTopIsDark = leftIsDark && topIsDark && $isDark(x - 1, y - 1)
+        const rightTopIsDark = rightIsDark && topIsDark && $isDark(x + 1, y - 1)
+        const rightBottomIsDark = rightIsDark && bottomIsDark && $isDark(x + 1, y + 1)
+        const leftBottomIsDark = leftIsDark && bottomIsDark && $isDark(x - 1, y + 1)
 
         const LT = isDark ? !leftIsDark && !topIsDark : leftTopIsDark
         const RT = isDark ? !rightIsDark && !topIsDark : rightTopIsDark
@@ -185,10 +197,10 @@ export async function generateQrcode(target: HTMLCanvasElement, options: QrcodeP
   const markerOuterSize = 7
   const markerDividerSize = 5
   const markerInnerSize = 3
-  const pos = margin + (moduleCount - markerOuterSize) * pixelSize
-  const p1 = [margin, margin]
-  const p2 = [pos, margin]
-  const p3 = [margin, pos]
+  const pos = (moduleCount - markerOuterSize) * pixelSize
+  const p1 = [0, 0]
+  const p2 = [pos, 0]
+  const p3 = [0, pos]
 
   if (options.markerStyle === 'Circle') {
     [p1, p2, p3].forEach((p) => {

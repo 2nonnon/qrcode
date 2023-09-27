@@ -16,12 +16,13 @@ export function QrcodeProvider({ children }: QrcodeProviderProps) {
   const [qrcode, dispatch] = useReducer(
     qrcodeReducer,
     {
-      typeNumber: 0,
-      errorCorrectionLevel: 'L',
-      mode: 'Byte',
       content: 'Hi!',
-      multibyte: 'UTF-8',
-      margin: 10,
+      ecc: 'L',
+      maskPattern: -1,
+      boostEcc: false,
+      minVersion: 1,
+      maxVersion: 40,
+      border: 2,
       pixelSize: 20,
       pixelStyle: 'Rounded',
       markerStyle: 'Auto',

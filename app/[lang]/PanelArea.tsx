@@ -87,14 +87,32 @@ export default function Panel() {
         </label>
 
         <FormItem name='ErrorCorrectionLevel'>
-          <RadioGroup name='errorCorrectionLevel' value={options.errorCorrectionLevel} onChange={handleChange} map={ErrorCorrectionLevelMap}></RadioGroup>
+          <RadioGroup name='ecc' value={options.ecc} onChange={handleChange} map={ErrorCorrectionLevelMap}></RadioGroup>
         </FormItem>
 
-        <FormItem name='TypeNumber'>
-          <select data-key='typeNumber' className='border border-[var(--border-color)] rounded w-32' id='TypeNumber' name="TypeNumber" value={options.typeNumber} onChange={handleChange}>
-            <option value={0}>Auto Detect</option>
+        <FormItem name='MaskPattern'>
+          <select data-key='maskPattern' className='border border-[var(--border-color)] rounded w-32' id='maskPattern' name="maskPattern" value={options.maskPattern} onChange={handleChange}>
+            {Array.from({ length: 9 }).map((_, i) => <option value={i - 1} key={i - 1}>{i - 1 < 0 ? 'Auto' : i - 1}</option>)}
+          </select>
+        </FormItem>
+
+        <FormItem name='MinVersion'>
+          <select data-key='minVersion' className='border border-[var(--border-color)] rounded w-32' id='minVersion' name="minVersion" value={options.minVersion} onChange={handleChange}>
             {Array.from({ length: 40 }).map((_, i) => <option value={i + 1} key={i + 1}>{i + 1}</option>)}
           </select>
+        </FormItem>
+
+        <FormItem name='MaxVersion'>
+          <select data-key='maxVersion' className='border border-[var(--border-color)] rounded w-32' id='maxVersion' name="maxVersion" value={options.maxVersion} onChange={handleChange}>
+            {Array.from({ length: 40 }).map((_, i) => <option value={i + 1} key={i + 1}>{i + 1}</option>)}
+          </select>
+        </FormItem>
+
+        <FormItem name='Margin'>
+          <div className='flex gap-4 w-full'>
+            <input data-key='border' className='flex-1' type="range" min={0} max={25} value={options.border} onChange={handleChange}/>
+            <input data-key='border' className='border border-[var(--border-color)] rounded w-16 pl-1' type="number" min={0} max={25} value={options.border} onChange={handleChange}/>
+          </div>
         </FormItem>
       </fieldset>
 
@@ -103,13 +121,6 @@ export default function Panel() {
           <div className='flex gap-4 w-full'>
             <input data-key='pixelSize' className='flex-1' type="range" min={1} max={100} value={options.pixelSize} onChange={handleChange}/>
             <input data-key='pixelSize' className='border border-[var(--border-color)] rounded w-16 pl-1' type="number" min={1} max={100} value={options.pixelSize} onChange={handleChange}/>
-          </div>
-        </FormItem>
-
-        <FormItem name='Margin'>
-          <div className='flex gap-4 w-full'>
-            <input data-key='margin' className='flex-1' type="range" min={0} max={25} value={options.margin} onChange={handleChange}/>
-            <input data-key='margin' className='border border-[var(--border-color)] rounded w-16 pl-1' type="number" min={0} max={25} value={options.margin} onChange={handleChange}/>
           </div>
         </FormItem>
 
