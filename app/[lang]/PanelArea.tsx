@@ -109,7 +109,7 @@ export default function Panel() {
         <FormItem name='Margin'>
           <div className='flex gap-4 w-full'>
             <input data-key='margin' className='flex-1' type="range" min={0} max={25} value={options.margin} onChange={handleChange}/>
-            <input data-key='margin' className='border border-[var(--border-color)] rounded w-16 pl-1' type="number" min={1} max={100} value={options.margin} onChange={handleChange}/>
+            <input data-key='margin' className='border border-[var(--border-color)] rounded w-16 pl-1' type="number" min={0} max={25} value={options.margin} onChange={handleChange}/>
           </div>
         </FormItem>
 
