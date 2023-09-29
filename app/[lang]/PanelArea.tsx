@@ -116,6 +116,47 @@ const NInput: FC<NInputProps> = ({ name, value, type = 'input', rows, onChange }
   </>)
 }
 
+interface NSelectProps<T = string | number> {
+  name?: string
+  value?: T
+  onChange: NChangeEventHandler<T>
+  options: Array<{
+    label: T
+    value: T
+  }>
+}
+
+const NSelect: FC<NSelectProps> = ({ name, value, onChange, options }) => {
+  const handleChange: ChangeEventHandler<HTMLSelectElement> = useCallback((e) => {
+    onChange(
+      e.target.value,
+      name,
+    )
+  }, [onChange, name])
+
+  return (<>
+    <select className='border border-[var(--border-color)] rounded w-32' value={value} onChange={handleChange}>
+      {options.map(item => <option value={item.value} key={item.value}>{item.label}</option>)}
+    </select>
+  </>)
+}
+
+const maskPatternOptions = [
+  {
+    label: 'Auto',
+    value: -1,
+  },
+  ...Array.from({ length: 8 }).map((_, i) => ({
+    label: i,
+    value: i,
+  })),
+]
+
+const versionOptions = Array.from({ length: 40 }).map((_, i) => ({
+  label: i + 1,
+  value: i + 1,
+}))
+
 export default function Panel() {
   const options = useQrcodeOptions()
 
@@ -146,21 +187,15 @@ export default function Panel() {
         </FormItem>
 
         <FormItem name='MaskPattern'>
-          <select data-key='maskPattern' className='border border-[var(--border-color)] rounded w-32' id='maskPattern' name="maskPattern" value={options.maskPattern} onChange={handleChange}>
-            {Array.from({ length: 9 }).map((_, i) => <option value={i - 1} key={i - 1}>{i - 1 < 0 ? 'Auto' : i - 1}</option>)}
-          </select>
+          <NSelect name='maskPattern' value={options.maskPattern} options={maskPatternOptions} onChange={handleChange2}></NSelect>
         </FormItem>
 
         <FormItem name='MinVersion'>
-          <select data-key='minVersion' className='border border-[var(--border-color)] rounded w-32' id='minVersion' name="minVersion" value={options.minVersion} onChange={handleChange}>
-            {Array.from({ length: 40 }).map((_, i) => <option value={i + 1} key={i + 1}>{i + 1}</option>)}
-          </select>
+          <NSelect name='minVersion' value={options.minVersion} options={versionOptions} onChange={handleChange2}></NSelect>
         </FormItem>
 
         <FormItem name='MaxVersion'>
-          <select data-key='maxVersion' className='border border-[var(--border-color)] rounded w-32' id='maxVersion' name="maxVersion" value={options.maxVersion} onChange={handleChange}>
-            {Array.from({ length: 40 }).map((_, i) => <option value={i + 1} key={i + 1}>{i + 1}</option>)}
-          </select>
+          <NSelect name='maxVersion' value={options.maxVersion} options={versionOptions} onChange={handleChange2}></NSelect>
         </FormItem>
 
         <FormItem name='Margin'>

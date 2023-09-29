@@ -10,7 +10,7 @@ const Qrcode = memo(forwardRef<HTMLCanvasElement>((options: QrcodeProps, ref) =>
   useEffect(() => {
     if (target.current)
       generateQrcode(target.current, options)
-  }, [options])
+  }, [options, target.current])
 
   useImperativeHandle(ref, () => {
     return target.current!
