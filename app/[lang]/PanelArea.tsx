@@ -179,6 +179,28 @@ const NSlider: FC<NSliderProps> = ({ className, name, value, min, max, onChange 
   </>)
 }
 
+interface NInputNumberProps {
+  className?: string
+  name?: string
+  value?: number
+  onChange: NChangeEventHandler<number>
+  min?: number
+  max?: number
+}
+
+const NInputNumber: FC<NInputNumberProps> = ({ className, name, value, min, max, onChange }) => {
+  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
+    onChange(
+      +e.target.value,
+      name,
+    )
+  }, [onChange, name])
+
+  return (<>
+    <input className={`border border-[var(--border-color)] rounded w-16 pl-1 ${className}`} type="number" min={min} max={max} value={value} onChange={handleChange}/>
+  </>)
+}
+
 export default function Panel() {
   const options = useQrcodeOptions()
 
@@ -189,12 +211,6 @@ export default function Panel() {
       const value = typeof options[key] === 'number' ? +v : v
       QrcodeDispatch({ type: 'changed', options: { [key]: value } })
     }
-  }, [])
-
-  const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const key = event.currentTarget.dataset.key as string
-    const value = typeof options[key] === 'number' ? +event.target.value : event.target.value
-    key && QrcodeDispatch({ type: 'changed', options: { [key]: value } })
   }, [])
 
   return (
@@ -223,7 +239,7 @@ export default function Panel() {
         <FormItem name='Margin'>
           <div className='flex gap-4 w-full'>
             <NSlider className='flex-1' name='border' min={0} max={25} value={options.border} onChange={handleChange2}></NSlider>
-            <input data-key='border' className='border border-[var(--border-color)] rounded w-16 pl-1' type="number" min={0} max={25} value={options.border} onChange={handleChange}/>
+            <NInputNumber name='border' min={0} max={25} value={options.border} onChange={handleChange2}></NInputNumber>
           </div>
         </FormItem>
       </fieldset>
@@ -232,7 +248,7 @@ export default function Panel() {
         <FormItem name='PixelSize'>
           <div className='flex gap-4 w-full'>
             <NSlider className='flex-1' name='pixelSize' min={1} max={100} value={options.pixelSize} onChange={handleChange2}></NSlider>
-            <input data-key='pixelSize' className='border border-[var(--border-color)] rounded w-16 pl-1' type="number" min={1} max={100} value={options.pixelSize} onChange={handleChange}/>
+            <NInputNumber name='pixelSize' min={1} max={100} value={options.pixelSize} onChange={handleChange2}></NInputNumber>
           </div>
         </FormItem>
 
