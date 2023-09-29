@@ -38,20 +38,41 @@ const RadioGroup: FC<RadioGroupProps> = ({ name, onChange, value, map }) => {
   </>)
 }
 
-interface UploadProps { name: string; value: File; onChange: ChangeEventHandler<HTMLInputElement>; onClear: MouseEventHandler<HTMLButtonElement> }
+type NChangeEventHandler<T> = (value: T | undefined, key?: string) => void
 
-const Upload: FC<UploadProps> = ({ name, value, onChange, onClear }) => {
+interface NUploadProps {
+  name?: string
+  label?: string
+  value?: File
+  onChange: NChangeEventHandler<File>
+}
+
+const NUpload: FC<NUploadProps> = ({ name, value, label, onChange }) => {
+  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
+    onChange(
+      e.target.files?.[0],
+      name,
+    )
+  }, [onChange, name])
+
+  const handleClear: MouseEventHandler<HTMLButtonElement> = useCallback(() => {
+    onChange(
+      undefined,
+      name,
+    )
+  }, [onChange, name])
+
   return (<>
     <div className='flex items-center gap-2 min-w-0'>
       <label className='surface-sm flex items-center justify-center w-fit rounded px-4 py-1 gap-2 cursor-pointer'>
-        <input data-key={name} className='hidden' type="file" accept='image/*' onChange={onChange}/>
+        <input data-key={name} className='hidden' type="file" accept='image/*' onChange={handleChange}/>
         <Icon icon="mingcute:upload-2-line" />
-        <span>Upload</span>
+        <span>{ label || 'Upload' }</span>
       </label>
       {
         value && <div className='flex items-center gap-2 min-w-0'>
           <p className='overflow-hidden text-ellipsis' title={value.name}>{value.name}</p>
-          <button data-key={name} type='button' className='flex text-xl' onClick={onClear}><Icon icon="jam:close-circle-f" /></button>
+          <button data-key={name} type='button' className='flex text-xl' onClick={handleClear}><Icon icon="jam:close-circle-f" /></button>
         </div>
       }
     </div>
@@ -63,14 +84,8 @@ export default function Panel() {
 
   const QrcodeDispatch = useQrcodeDispatch()
 
-  const clearUpload = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    const key = event.currentTarget.dataset.key as string
-    key && QrcodeDispatch({ type: 'changed', options: { [key]: undefined } })
-  }, [])
-
-  const handleUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const key = event.currentTarget.dataset.key as string
-    key && QrcodeDispatch({ type: 'changed', options: { [key]: event.target.files![0] } })
+  const handleUpload = useCallback<NUploadProps['onChange']>((value, key) => {
+    key && QrcodeDispatch({ type: 'changed', options: { [key]: value } })
   }, [])
 
   const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -133,11 +148,11 @@ export default function Panel() {
         </FormItem>
 
         <FormItem name='Logo'>
-          <Upload name='logo' value={options.logo} onChange={handleUpload} onClear={clearUpload}></Upload>
+          <NUpload name='logo' value={options.logo} onChange={handleUpload} ></NUpload>
         </FormItem>
 
         <FormItem name='Background'>
-          <Upload name='background' value={options.background} onChange={handleUpload} onClear={clearUpload}></Upload>
+          <NUpload name='background' value={options.background} onChange={handleUpload} ></NUpload>
         </FormItem>
       </fieldset>
     </form>
