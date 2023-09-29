@@ -24,14 +24,26 @@ const FormItem: FC<FormItemProps> = ({ name, children }) => {
   )
 }
 
-interface RadioGroupProps { name: string;value: string; map: object; onChange: ChangeEventHandler<HTMLInputElement> }
+interface NRadioGroupProps {
+  name: string
+  value: string
+  map: object
+  onChange: NChangeEventHandler<string>
+}
 
-const RadioGroup: FC<RadioGroupProps> = ({ name, onChange, value, map }) => {
+const NRadioGroup: FC<NRadioGroupProps> = ({ name, onChange, value, map }) => {
+  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
+    onChange(
+      e.target.value,
+      name,
+    )
+  }, [onChange, name])
+
   return (<>
     <div className='surface-sm__inert w-fit rounded flex overflow-hidden'>
       {Object.entries(map).map(item =>
         <div className='border-r last:border-none border-[var(--border-color)]' key={item[0]}>
-          <input data-key={name} id={item[1]} className='peer hidden' type="radio" name={name} value={item[0]} onChange={onChange} checked={value === item[0]}></input>
+          <input data-key={name} id={item[1]} className='peer hidden' type="radio" name={name} value={item[0]} onChange={handleChange} checked={value === item[0]}></input>
           <label htmlFor={item[1]} className='peer-checked:surface-sm__active px-2 py-1 flex cursor-pointer'>{item[1]}</label>
         </div>)}
     </div>
@@ -79,13 +91,41 @@ const NUpload: FC<NUploadProps> = ({ name, value, label, onChange }) => {
   </>)
 }
 
+interface NInputProps {
+  name?: string
+  value?: string
+  onChange: NChangeEventHandler<string>
+  type?: 'input' | 'textarea'
+  rows?: number
+}
+
+const NInput: FC<NInputProps> = ({ name, value, type = 'input', rows, onChange }) => {
+  const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = useCallback((e) => {
+    onChange(
+      e.target.value,
+      name,
+    )
+  }, [onChange, name])
+
+  return (<>
+    {
+      type === 'textarea'
+        ? <textarea className='w-full rounded px-4 py-2' rows={rows} value={value} onChange={handleChange}></textarea>
+        : <input className='w-full rounded px-4 py-2' value={value} onChange={handleChange}/>
+    }
+  </>)
+}
+
 export default function Panel() {
   const options = useQrcodeOptions()
 
   const QrcodeDispatch = useQrcodeDispatch()
 
-  const handleUpload = useCallback<NUploadProps['onChange']>((value, key) => {
-    key && QrcodeDispatch({ type: 'changed', options: { [key]: value } })
+  const handleChange2 = useCallback<NChangeEventHandler<any>>((v, key) => {
+    if (key) {
+      const value = typeof options[key] === 'number' ? +v : v
+      QrcodeDispatch({ type: 'changed', options: { [key]: value } })
+    }
   }, [])
 
   const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -98,11 +138,11 @@ export default function Panel() {
     <form className='flex flex-col gap-3 text-base pb-4'>
       <fieldset className='flex flex-col gap-3 w-full min-w-[auto]'>
         <label className='border border-[var(--border-color)] flex rounded'>
-          <textarea data-key='content' id="Content" className='w-full rounded px-4 py-2' rows={5} value={options.content} onChange={handleChange}></textarea>
+          <NInput name='content' type='textarea' rows={5} value={options.content} onChange={handleChange2}></NInput>
         </label>
 
         <FormItem name='ErrorCorrectionLevel'>
-          <RadioGroup name='ecc' value={options.ecc} onChange={handleChange} map={ErrorCorrectionLevelMap}></RadioGroup>
+          <NRadioGroup name='ecc' value={options.ecc} onChange={handleChange2} map={ErrorCorrectionLevelMap}></NRadioGroup>
         </FormItem>
 
         <FormItem name='MaskPattern'>
@@ -140,19 +180,19 @@ export default function Panel() {
         </FormItem>
 
         <FormItem name='PixelStyle'>
-          <RadioGroup name='pixelStyle' value={options.pixelStyle} onChange={handleChange} map={PixelStyleMap}></RadioGroup>
+          <NRadioGroup name='pixelStyle' value={options.pixelStyle} onChange={handleChange2} map={PixelStyleMap}></NRadioGroup>
         </FormItem>
 
         <FormItem name='MarkerStyle'>
-          <RadioGroup name='markerStyle' value={options.markerStyle} onChange={handleChange} map={MarkerStyleMap}></RadioGroup>
+          <NRadioGroup name='markerStyle' value={options.markerStyle} onChange={handleChange2} map={MarkerStyleMap}></NRadioGroup>
         </FormItem>
 
         <FormItem name='Logo'>
-          <NUpload name='logo' value={options.logo} onChange={handleUpload} ></NUpload>
+          <NUpload name='logo' value={options.logo} onChange={handleChange2} ></NUpload>
         </FormItem>
 
         <FormItem name='Background'>
-          <NUpload name='background' value={options.background} onChange={handleUpload} ></NUpload>
+          <NUpload name='background' value={options.background} onChange={handleChange2} ></NUpload>
         </FormItem>
       </fieldset>
     </form>
