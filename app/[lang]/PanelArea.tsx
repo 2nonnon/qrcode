@@ -206,7 +206,7 @@ export default function Panel() {
 
   const QrcodeDispatch = useQrcodeDispatch()
 
-  const handleChange2 = useCallback<NChangeEventHandler<any>>((v, key) => {
+  const handleChange = useCallback<NChangeEventHandler<any>>((v, key) => {
     if (key) {
       const value = typeof options[key] === 'number' ? +v : v
       QrcodeDispatch({ type: 'changed', options: { [key]: value } })
@@ -217,29 +217,29 @@ export default function Panel() {
     <form className='flex flex-col gap-3 text-base pb-4'>
       <fieldset className='flex flex-col gap-3 w-full min-w-[auto]'>
         <label className='border border-[var(--border-color)] flex rounded'>
-          <NInput name='content' type='textarea' rows={5} value={options.content} onChange={handleChange2}></NInput>
+          <NInput name='content' type='textarea' rows={5} value={options.content} onChange={handleChange}></NInput>
         </label>
 
         <FormItem name='ErrorCorrectionLevel'>
-          <NRadioGroup name='ecc' value={options.ecc} onChange={handleChange2} map={ErrorCorrectionLevelMap}></NRadioGroup>
+          <NRadioGroup name='ecc' value={options.ecc} onChange={handleChange} map={ErrorCorrectionLevelMap}></NRadioGroup>
         </FormItem>
 
         <FormItem name='MaskPattern'>
-          <NSelect name='maskPattern' value={options.maskPattern} options={maskPatternOptions} onChange={handleChange2}></NSelect>
+          <NSelect name='maskPattern' value={options.maskPattern} options={maskPatternOptions} onChange={handleChange}></NSelect>
         </FormItem>
 
         <FormItem name='MinVersion'>
-          <NSelect name='minVersion' value={options.minVersion} options={versionOptions} onChange={handleChange2}></NSelect>
+          <NSelect name='minVersion' value={options.minVersion} options={versionOptions} onChange={handleChange}></NSelect>
         </FormItem>
 
         <FormItem name='MaxVersion'>
-          <NSelect name='maxVersion' value={options.maxVersion} options={versionOptions} onChange={handleChange2}></NSelect>
+          <NSelect name='maxVersion' value={options.maxVersion} options={versionOptions} onChange={handleChange}></NSelect>
         </FormItem>
 
         <FormItem name='Margin'>
           <div className='flex gap-4 w-full'>
-            <NSlider className='flex-1' name='border' min={0} max={25} value={options.border} onChange={handleChange2}></NSlider>
-            <NInputNumber name='border' min={0} max={25} value={options.border} onChange={handleChange2}></NInputNumber>
+            <NSlider className='flex-1' name='border' min={0} max={25} value={options.border} onChange={handleChange}></NSlider>
+            <NInputNumber name='border' min={0} max={25} value={options.border} onChange={handleChange}></NInputNumber>
           </div>
         </FormItem>
       </fieldset>
@@ -247,25 +247,25 @@ export default function Panel() {
       <fieldset className='flex flex-col gap-3 w-full min-w-0'>
         <FormItem name='PixelSize'>
           <div className='flex gap-4 w-full'>
-            <NSlider className='flex-1' name='pixelSize' min={1} max={100} value={options.pixelSize} onChange={handleChange2}></NSlider>
-            <NInputNumber name='pixelSize' min={1} max={100} value={options.pixelSize} onChange={handleChange2}></NInputNumber>
+            <NSlider className='flex-1' name='pixelSize' min={1} max={100} value={options.pixelSize} onChange={handleChange}></NSlider>
+            <NInputNumber name='pixelSize' min={1} max={100} value={options.pixelSize} onChange={handleChange}></NInputNumber>
           </div>
         </FormItem>
 
         <FormItem name='PixelStyle'>
-          <NRadioGroup name='pixelStyle' value={options.pixelStyle} onChange={handleChange2} map={PixelStyleMap}></NRadioGroup>
+          <NRadioGroup name='pixelStyle' value={options.pixelStyle} onChange={handleChange} map={PixelStyleMap}></NRadioGroup>
         </FormItem>
 
         <FormItem name='MarkerStyle'>
-          <NRadioGroup name='markerStyle' value={options.markerStyle} onChange={handleChange2} map={MarkerStyleMap}></NRadioGroup>
+          <NRadioGroup name='markerStyle' value={options.markerStyle} onChange={handleChange} map={MarkerStyleMap}></NRadioGroup>
         </FormItem>
 
         <FormItem name='Logo'>
-          <NUpload name='logo' value={options.logo} onChange={handleChange2} ></NUpload>
+          <NUpload name='logo' value={options.logo} onChange={handleChange} ></NUpload>
         </FormItem>
 
         <FormItem name='Background'>
-          <NUpload name='background' value={options.background} onChange={handleChange2} ></NUpload>
+          <NUpload name='background' value={options.background} onChange={handleChange} ></NUpload>
         </FormItem>
       </fieldset>
     </form>
