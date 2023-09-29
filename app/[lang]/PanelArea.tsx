@@ -157,6 +157,28 @@ const versionOptions = Array.from({ length: 40 }).map((_, i) => ({
   value: i + 1,
 }))
 
+interface NSliderProps {
+  className?: string
+  name?: string
+  value?: string | number
+  onChange: NChangeEventHandler<string>
+  min?: number
+  max?: number
+}
+
+const NSlider: FC<NSliderProps> = ({ className, name, value, min, max, onChange }) => {
+  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
+    onChange(
+      e.target.value,
+      name,
+    )
+  }, [onChange, name])
+
+  return (<>
+    <input className={className} type="range" min={min} max={max} value={value} onChange={handleChange}/>
+  </>)
+}
+
 export default function Panel() {
   const options = useQrcodeOptions()
 
@@ -200,7 +222,7 @@ export default function Panel() {
 
         <FormItem name='Margin'>
           <div className='flex gap-4 w-full'>
-            <input data-key='border' className='flex-1' type="range" min={0} max={25} value={options.border} onChange={handleChange}/>
+            <NSlider className='flex-1' name='border' min={0} max={25} value={options.border} onChange={handleChange2}></NSlider>
             <input data-key='border' className='border border-[var(--border-color)] rounded w-16 pl-1' type="number" min={0} max={25} value={options.border} onChange={handleChange}/>
           </div>
         </FormItem>
@@ -209,7 +231,7 @@ export default function Panel() {
       <fieldset className='flex flex-col gap-3 w-full min-w-0'>
         <FormItem name='PixelSize'>
           <div className='flex gap-4 w-full'>
-            <input data-key='pixelSize' className='flex-1' type="range" min={1} max={100} value={options.pixelSize} onChange={handleChange}/>
+            <NSlider className='flex-1' name='pixelSize' min={1} max={100} value={options.pixelSize} onChange={handleChange2}></NSlider>
             <input data-key='pixelSize' className='border border-[var(--border-color)] rounded w-16 pl-1' type="number" min={1} max={100} value={options.pixelSize} onChange={handleChange}/>
           </div>
         </FormItem>
