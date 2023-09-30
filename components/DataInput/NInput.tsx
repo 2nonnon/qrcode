@@ -5,6 +5,7 @@ import { useCallback } from 'react'
 import type { NChangeEventHandler } from './type'
 
 interface NInputProps {
+  className?: string
   name?: string
   value?: string
   onChange: NChangeEventHandler<string>
@@ -12,7 +13,7 @@ interface NInputProps {
   rows?: number
 }
 
-export const NInput: FC<NInputProps> = ({ name, value, type = 'input', rows, onChange }) => {
+export const NInput: FC<NInputProps> = ({ className, name, value, type = 'input', rows, onChange }) => {
   const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = useCallback((e) => {
     onChange(
       e.target.value,
@@ -23,8 +24,8 @@ export const NInput: FC<NInputProps> = ({ name, value, type = 'input', rows, onC
   return (<>
     {
       type === 'textarea'
-        ? <textarea className='w-full rounded px-4 py-2' rows={rows} value={value} onChange={handleChange}></textarea>
-        : <input className='w-full rounded px-4 py-2' value={value} onChange={handleChange}/>
+        ? <textarea className={`w-full rounded px-4 py-2 ${className}`} rows={rows} value={value} onChange={handleChange}></textarea>
+        : <input className={`w-full rounded px-4 py-2 ${className}`} value={value} onChange={handleChange}/>
     }
   </>)
 }

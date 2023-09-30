@@ -15,6 +15,7 @@ import { NRadioGroup } from '@/components/DataInput/NRadioGroup'
 import { NSelect } from '@/components/DataInput/NSelect'
 import { NSlider } from '@/components/DataInput/NSlider'
 import { NUpload } from '@/components/DataInput/NUpload'
+import throttle from '@/utils/throttle'
 
 const maskPatternOptions = [
   {
@@ -37,12 +38,12 @@ export default function Panel() {
 
   const QrcodeDispatch = useQrcodeDispatch()
 
-  const handleChange = useCallback<NChangeEventHandler<any>>((v, key) => {
+  const handleChange = useCallback<NChangeEventHandler<any>>(throttle((v, key) => {
     if (key) {
       const value = typeof options[key] === 'number' ? +v : v
       QrcodeDispatch({ type: 'changed', options: { [key]: value } })
     }
-  }, [])
+  }, 100), [])
 
   return (
     <form className='flex flex-col gap-3 text-base pb-4'>

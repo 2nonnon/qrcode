@@ -22,6 +22,6 @@ export const NSlider: FC<NSliderProps> = ({ className, name, value, min, max, on
   }, [onChange, name])
 
   return (<>
-    <input className={className} type="range" min={min} max={max} value={value} onChange={handleChange}/>
+    <input className={`cursor-pointer ${className}`} type="range" min={min} max={max} value={value} onChange={handleChange}/>
   </>)
 }
