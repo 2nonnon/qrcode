@@ -1,20 +1,22 @@
 'use client'
 
 import { forwardRef, memo, useEffect, useImperativeHandle, useRef } from 'react'
-import type { QrcodeProps } from './generateQrcode'
+import type { GenerateQrcodeOptions, GenerateQrcodeResult } from './generateQrcode'
 import { generateQrcode } from './generateQrcode'
 
-const Qrcode = memo(forwardRef<HTMLCanvasElement>((options: QrcodeProps, ref) => {
+export type QrcodeProps = GenerateQrcodeOptions & { onChange?: (result: GenerateQrcodeResult) => void }
+
+const Qrcode = memo(forwardRef<HTMLCanvasElement, QrcodeProps>(({ onChange, ...options }, ref) => {
   const target = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
     if (target.current)
-      generateQrcode(target.current, options)
+      generateQrcode(target.current, options).then(onChange)
   }, [options, target.current])
 
   useImperativeHandle(ref, () => {
     return target.current!
-  }, [])
+  }, [target.current])
 
   return (
     <>

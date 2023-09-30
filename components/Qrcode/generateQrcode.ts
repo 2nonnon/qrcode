@@ -1,5 +1,5 @@
 import type {
-  QrCodeGenerateOptions,
+  QrCodeGenerateOptions, QrCodeGenerateResult,
 } from 'uqr'
 import {
   encode,
@@ -30,7 +30,7 @@ export const MarkerStyleMap = {
 
 export type MarkerStyleType = keyof typeof MarkerStyleMap
 
-export type QrcodeProps = Required<Omit<QrCodeGenerateOptions, 'invert' | 'onEncoded'>> & DrawOptions & {
+export type GenerateQrcodeOptions = Required<Omit<QrCodeGenerateOptions, 'invert' | 'onEncoded'>> & DrawOptions & {
   content: string
 }
 
@@ -80,17 +80,22 @@ function drawRoundedCell({ x, y, size, isDark, lightColor, darkColor, ctx, corne
   }
 }
 
-export async function generateQrcode(target: HTMLCanvasElement, options: QrcodeProps) {
+export type GenerateQrcodeResult = Omit<QrCodeGenerateResult, 'data' | 'types'> & {
+  width: number
+  height: number
+}
+
+export async function generateQrcode(target: HTMLCanvasElement, options: GenerateQrcodeOptions): Promise<GenerateQrcodeResult> {
   // console.log(options)
 
   const { ecc, maskPattern, boostEcc, minVersion, maxVersion, border } = options
 
   const qr = encode(options.content, { ecc, maskPattern, boostEcc, minVersion, maxVersion, border })
 
-  // console.log(qr)
+  console.log(qr)
 
   // base data
-  const moduleCount = qr.data.length
+  const moduleCount = qr.size
 
   const $isDark = (x: number, y: number) => {
     return qr.data[x][y]
@@ -109,9 +114,10 @@ export async function generateQrcode(target: HTMLCanvasElement, options: QrcodeP
 
   const qrcodeSize = moduleCount * (pixelSize)
 
-  const width = qrcodeSize
-  target.height = width < maxSize ? width : maxSize
-  target.width = width < maxSize ? width : maxSize
+  const width = qrcodeSize < maxSize ? qrcodeSize : maxSize
+
+  target.height = width
+  target.width = width
 
   // init offscreenCanvas
   const offscreenCanvas = document.createElement('canvas')
@@ -313,5 +319,13 @@ export async function generateQrcode(target: HTMLCanvasElement, options: QrcodeP
       URL.revokeObjectURL(url)
     }
     image.src = url
+  }
+
+  return {
+    version: qr.version,
+    size: qr.size,
+    maskPattern: qr.maskPattern,
+    width,
+    height: width,
   }
 }

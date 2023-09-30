@@ -2,9 +2,9 @@
 
 import type { Dispatch } from 'react'
 import { createContext, useContext, useReducer } from 'react'
-import type { QrcodeProps } from '@/components/Qrcode'
+import type { GenerateQrcodeOptions } from '@/components/Qrcode'
 
-const QrcodeContext = createContext<QrcodeProps | null>(null)
+const QrcodeContext = createContext<GenerateQrcodeOptions | null>(null)
 
 const QrcodeDispatchContext = createContext<Dispatch<QrcodeReducerAction> | null>(null)
 
@@ -26,7 +26,7 @@ export function QrcodeProvider({ children }: QrcodeProviderProps) {
       pixelSize: 20,
       pixelStyle: 'Rounded',
       markerStyle: 'Auto',
-    } as QrcodeProps,
+    } as GenerateQrcodeOptions,
   )
 
   return (
@@ -48,10 +48,10 @@ export function useQrcodeDispatch() {
 
 export interface QrcodeReducerAction {
   type: 'changed'
-  options: Partial<QrcodeProps>
+  options: Partial<GenerateQrcodeOptions>
 }
 
-function qrcodeReducer(options: QrcodeProps, action: QrcodeReducerAction): QrcodeProps {
+function qrcodeReducer(options: GenerateQrcodeOptions, action: QrcodeReducerAction): GenerateQrcodeOptions {
   switch (action.type) {
     case 'changed': {
       return Object.assign({}, options, action.options)
