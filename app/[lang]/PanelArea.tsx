@@ -4,7 +4,7 @@ import React, { useCallback } from 'react'
 import { useQrcodeDispatch, useQrcodeOptions } from './QrcodeContext'
 import {
   ErrorCorrectionLevelMap,
-  // MarkerStyleMap,
+  MarkerStyleMap,
   PixelStyleMap,
 } from '@/components/Qrcode'
 import type { NChangeEventHandler } from '@/components/DataInput/type'
@@ -88,9 +88,9 @@ export default function Panel() {
           <NRadioGroup name='pixelStyle' value={options.pixelStyle} onChange={handleChange} map={PixelStyleMap}></NRadioGroup>
         </NFormItem>
 
-        {/* <NFormItem name='MarkerStyle'>
+        <NFormItem name='MarkerStyle'>
           <NRadioGroup name='markerStyle' value={options.markerStyle} onChange={handleChange} map={MarkerStyleMap}></NRadioGroup>
-        </NFormItem> */}
+        </NFormItem>
 
         <NFormItem name='Logo'>
           <NUpload name='logo' value={options.logo} onChange={handleChange} ></NUpload>

@@ -87,7 +87,7 @@ export async function generateQrcode(target: HTMLCanvasElement, options: QrcodeP
 
   const qr = encode(options.content, { ecc, maskPattern, boostEcc, minVersion, maxVersion, border })
 
-  console.log(qr)
+  // console.log(qr)
 
   // base data
   const moduleCount = qr.data.length
@@ -197,10 +197,13 @@ export async function generateQrcode(target: HTMLCanvasElement, options: QrcodeP
   const markerOuterSize = 7
   const markerDividerSize = 5
   const markerInnerSize = 3
-  const pos = (moduleCount - markerOuterSize) * pixelSize
-  const p1 = [0, 0]
-  const p2 = [pos, 0]
-  const p3 = [0, pos]
+
+  const borderWidth = border * pixelSize
+  const pos = (moduleCount - markerOuterSize - border) * pixelSize
+
+  const p1 = [borderWidth, borderWidth]
+  const p2 = [pos, borderWidth]
+  const p3 = [borderWidth, pos]
 
   if (options.markerStyle === 'Circle') {
     [p1, p2, p3].forEach((p) => {
