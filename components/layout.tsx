@@ -56,6 +56,15 @@ export default function Layout({ children, dictionary, locale }: {
         <main className='px-6 max-w-screen-xl box-border w-full mx-auto overflow-hidden flex-1 flex flex-col'>
           {children}
         </main>
+        <footer className='max-w-screen-xl mx-auto w-full px-6 box-border my-4'>
+          <p className='text-sm my-2'>
+            Inspired by:&nbsp;<a className='underline underline-offset-4' href="https://qrcode.antfu.me/" target='_blank'>Anthony Fu's QR Toolkit</a>
+          </p>
+          <p className='text-sm my-2'>
+            The code of dark mode toggle from:&nbsp;
+            <a className='underline  underline-offset-4' href="https://codepen.io/jh3y/pen/LYgjpYZ" target='_blank'>Night && Day Toggle ☀️/🌙 [Completed It!]</a>
+          </p>
+        </footer>
         <ScrollTop content={copies.toTop}></ScrollTop>
       </div>
     </>
